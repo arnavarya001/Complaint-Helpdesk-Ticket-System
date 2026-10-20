@@ -8,19 +8,19 @@ const {
   reopenTicket,
   deleteTicket,
 } = require('../controllers/ticketController');
-const { verifyToken } = require('../middleware/authHandler');
+const { verifyToken, optionalAuth } = require('../middleware/authHandler');
 
-router.use(verifyToken);
-
+// GET /api/tickets is public/optionalAuth (allows browsing tickets without login)
+// POST /api/tickets requires authentication
 router.route('/')
-  .get(getTickets)
-  .post(createTicket);
+  .get(optionalAuth, getTickets)
+  .post(verifyToken, createTicket);
 
 router.route('/:id')
-  .get(getTicketById)
-  .put(updateTicket)
-  .delete(deleteTicket);
+  .get(optionalAuth, getTicketById)
+  .put(verifyToken, updateTicket)
+  .delete(verifyToken, deleteTicket);
 
-router.post('/:id/reopen', reopenTicket);
+router.post('/:id/reopen', verifyToken, reopenTicket);
 
 module.exports = router;

@@ -23,7 +23,7 @@ const verifyToken = async (req, res, next) => {
       }
 
       req.user = user;
-      next();
+      return next();
     } catch (error) {
       console.error('Token verification error:', error.message);
       return res.status(401).json({ message: 'Invalid or expired token. Please log in again.' });
@@ -33,6 +33,27 @@ const verifyToken = async (req, res, next) => {
   if (!token) {
     return res.status(401).json({ message: 'No authorization token provided.' });
   }
+};
+
+// Optional auth: Attaches user if valid token exists, otherwise proceeds as guest
+const optionalAuth = async (req, res, next) => {
+  if (
+    req.headers.authorization &&
+    req.headers.authorization.startsWith('Bearer')
+  ) {
+    try {
+      const token = req.headers.authorization.split(' ')[1];
+      const decoded = jwt.verify(
+        token,
+        process.env.JWT_SECRET || 'helpdesk_secret_jwt_token_key_assignment6_2026'
+      );
+      const user = await User.findById(decoded.id).select('-password');
+      if (user) req.user = user;
+    } catch {
+      // Ignore token errors in optionalAuth
+    }
+  }
+  next();
 };
 
 // Check specific user role (e.g. 'admin')
@@ -49,5 +70,6 @@ const requireRole = (role) => {
 
 module.exports = {
   verifyToken,
+  optionalAuth,
   requireRole,
 };

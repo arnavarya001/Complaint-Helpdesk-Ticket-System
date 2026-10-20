@@ -25,8 +25,8 @@ const getTickets = async (req, res, next) => {
 
     const filter = {};
 
-    // Customer can only view their own tickets
-    if (req.user.role !== 'admin') {
+    // Customer can only view their own tickets (when authenticated as customer)
+    if (req.user && req.user.role === 'customer') {
       filter.customer = req.user._id;
     }
 

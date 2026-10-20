@@ -21,15 +21,16 @@ app.use(
   })
 );
 app.use(express.json());
-app.use(express.urlencoded({ extended: false }));
+app.use(express.urlencoded({ extended: true }));
 
-// Basic Health Check Route
+// Root Welcome Route
 app.get('/', (req, res) => {
-  res.json({
-    message: 'Complaint & Helpdesk Ticket System API is running',
-    version: '1.0.0',
-    status: 'online',
-  });
+  res.send("hello world");
+});
+
+// API Health Check Route
+app.get(['/api', '/api/'], (req, res) => {
+  res.send("api working");
 });
 
 // Mount Resource Routes under /api/
@@ -47,7 +48,7 @@ app.use((req, res, next) => {
 // Centralized Error Handling Middleware
 app.use(errorHandler);
 
-const PORT = process.env.PORT || 5000;
+const PORT = process.env.PORT || 5001;
 
 app.listen(PORT, () => {
   console.log(`Server running in ${process.env.NODE_ENV || 'development'} mode on port ${PORT}`);
