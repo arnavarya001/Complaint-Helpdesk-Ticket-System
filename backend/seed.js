@@ -21,250 +21,45 @@ const seedData = async () => {
     const adminPassword = await bcrypt.hash('admin123', salt);
     const userPassword = await bcrypt.hash('user123', salt);
 
-    const admin = await User.create({
-      name: 'Admin User',
-      email: 'admin@helpdesk.com',
-      password: adminPassword,
-      role: 'admin',
-    });
+    const admin = await User.create({ name: 'Admin User', email: 'admin@helpdesk.com', password: adminPassword, role: 'admin' });
+    const user1 = await User.create({ name: 'John Doe', email: 'john@example.com', password: userPassword, role: 'customer' });
+    const user2 = await User.create({ name: 'Sarah Connor', email: 'sarah@example.com', password: userPassword, role: 'customer' });
+    const user3 = await User.create({ name: 'Alex Rivera', email: 'alex@example.com', password: userPassword, role: 'customer' });
 
-    const customer1 = await User.create({
-      name: 'John Doe',
-      email: 'john@example.com',
-      password: userPassword,
-      role: 'customer',
-    });
+    const d1 = await Department.create({ name: 'Technical Support', description: 'Software and system errors' });
+    const d2 = await Department.create({ name: 'Billing & Accounts', description: 'Payments and invoices' });
+    const d3 = await Department.create({ name: 'Customer Service', description: 'General customer queries' });
+    const d4 = await Department.create({ name: 'IT Infrastructure', description: 'VPN, network, and hardware' });
 
-    const customer2 = await User.create({
-      name: 'Sarah Connor',
-      email: 'sarah@example.com',
-      password: userPassword,
-      role: 'customer',
-    });
-
-    const customer3 = await User.create({
-      name: 'Alex Rivera',
-      email: 'alex@example.com',
-      password: userPassword,
-      role: 'customer',
-    });
-
-    const techDept = await Department.create({
-      name: 'Technical Support',
-      description: 'Hardware, software crashes, and network diagnostics',
-    });
-
-    const billingDept = await Department.create({
-      name: 'Billing & Accounts',
-      description: 'Invoices, refunds, payment gateway issues, and subscription billing',
-    });
-
-    const csDept = await Department.create({
-      name: 'Customer Service',
-      description: 'Account assistance, general inquiries, and user onboarding',
-    });
-
-    const infraDept = await Department.create({
-      name: 'IT Infrastructure',
-      description: 'Server access, VPN setup, hardware provisioning, and security permissions',
-    });
-
-    const now = Date.now();
-    const hoursAgo = (h) => new Date(now - h * 60 * 60 * 1000);
+    const hoursAgo = (h) => new Date(Date.now() - h * 3600000);
 
     const sampleTickets = [
-      {
-        ticketId: 'TKT-1001',
-        title: 'Unable to access VPN when working remotely',
-        category: 'Technical',
-        priority: 'High',
-        description: 'Receiving Error 403 authorization failed whenever I connect through Cisco AnyConnect on macOS.',
-        screenshotUrl: 'https://images.unsplash.com/photo-1558494949-ef010cbdcc31?w=600',
-        customer: customer1._id,
-        department: infraDept._id,
-        status: 'Open',
-        reopenCount: 0,
-        createdAt: hoursAgo(24),
-      },
-      {
-        ticketId: 'TKT-1002',
-        title: 'Billed twice for annual subscription renewal',
-        category: 'Billing',
-        priority: 'High',
-        description: 'My credit card shows two identical charges of $120 on October 18th for invoice #INV-9821.',
-        screenshotUrl: 'https://images.unsplash.com/photo-1554224155-8d04cb21cd6c?w=600',
-        customer: customer2._id,
-        department: billingDept._id,
-        status: 'In Progress',
-        reopenCount: 0,
-        createdAt: hoursAgo(18),
-      },
-      {
-        ticketId: 'TKT-1003',
-        title: 'Keyboard keys sticky on workstation laptop',
-        category: 'Hardware',
-        priority: 'Low',
-        description: 'The spacebar and E key on the assigned ThinkPad laptop are sticking and require replacement.',
-        screenshotUrl: '',
-        customer: customer3._id,
-        department: techDept._id,
-        status: 'Resolved',
-        reopenCount: 0,
-        createdAt: hoursAgo(48),
-        resolvedAt: hoursAgo(42),
-      },
-      {
-        ticketId: 'TKT-1004',
-        title: 'Password reset link expires instantly',
-        category: 'Account',
-        priority: 'Medium',
-        description: 'When clicking the reset password link in my email, the website says token expired even within 1 minute.',
-        screenshotUrl: 'https://images.unsplash.com/photo-1563986768609-322da13575f3?w=600',
-        customer: customer1._id,
-        department: csDept._id,
-        status: 'Open',
-        reopenCount: 0,
-        createdAt: hoursAgo(10),
-      },
-      {
-        ticketId: 'TKT-1005',
-        title: 'Request second external monitor for UI design work',
-        category: 'Hardware',
-        priority: 'Low',
-        description: 'Requesting a 27-inch 4K monitor for dual display workspace to inspect responsive web layouts.',
-        screenshotUrl: '',
-        customer: customer2._id,
-        department: techDept._id,
-        status: 'Closed',
-        reopenCount: 0,
-        createdAt: hoursAgo(72),
-        resolvedAt: hoursAgo(64),
-      },
-      {
-        ticketId: 'TKT-1006',
-        title: 'Payment gateway timeout during checkout',
-        category: 'Billing',
-        priority: 'High',
-        description: 'Customer reports that Stripe 3D Secure verification gets stuck in infinite loading spinner.',
-        screenshotUrl: 'https://images.unsplash.com/photo-1559526324-4b87b5e36e44?w=600',
-        customer: customer3._id,
-        department: billingDept._id,
-        status: 'In Progress',
-        reopenCount: 0,
-        createdAt: hoursAgo(14),
-      },
-      {
-        ticketId: 'TKT-1007',
-        title: 'Two-factor authentication SMS not arriving',
-        category: 'Account',
-        priority: 'High',
-        description: 'OTP SMS is delayed by over 30 minutes on Airtel telecom network in New Delhi region.',
-        screenshotUrl: '',
-        customer: customer1._id,
-        department: csDept._id,
-        status: 'Resolved',
-        reopenCount: 0,
-        createdAt: hoursAgo(30),
-        resolvedAt: hoursAgo(27),
-      },
-      {
-        ticketId: 'TKT-1008',
-        title: 'Export to PDF report displays corrupted fonts',
-        category: 'Technical',
-        priority: 'Medium',
-        description: 'When downloading monthly analytics summary as PDF, Unicode Hindi characters render as square boxes.',
-        screenshotUrl: '',
-        customer: customer2._id,
-        department: techDept._id,
-        status: 'Open',
-        reopenCount: 0,
-        createdAt: hoursAgo(6),
-      },
-      {
-        ticketId: 'TKT-1009',
-        title: 'Update business invoice billing address',
-        category: 'Billing',
-        priority: 'Low',
-        description: 'Please change our registered tax invoice address to our new office location in Bangalore.',
-        screenshotUrl: '',
-        customer: customer3._id,
-        department: billingDept._id,
-        status: 'Resolved',
-        reopenCount: 0,
-        createdAt: hoursAgo(50),
-        resolvedAt: hoursAgo(45),
-      },
-      {
-        ticketId: 'TKT-1010',
-        title: 'Slow page load times on dashboard analytics',
-        category: 'Technical',
-        priority: 'Medium',
-        description: 'Loading the analytics chart page takes over 8 seconds during peak afternoon hours.',
-        screenshotUrl: 'https://images.unsplash.com/photo-1551288049-bebda4e38f71?w=600',
-        customer: customer1._id,
-        department: infraDept._id,
-        status: 'In Progress',
-        reopenCount: 0,
-        createdAt: hoursAgo(12),
-      },
-      {
-        ticketId: 'TKT-1011',
-        title: 'General onboarding inquiry for team seats',
-        category: 'General',
-        priority: 'Low',
-        description: 'How do we invite 5 new interns into our team workspace with restricted viewing permissions?',
-        screenshotUrl: '',
-        customer: customer2._id,
-        department: csDept._id,
-        status: 'Closed',
-        reopenCount: 0,
-        createdAt: hoursAgo(90),
-        resolvedAt: hoursAgo(86),
-      },
-      {
-        ticketId: 'TKT-1012',
-        title: 'API Rate limit exceeded on reporting webhook',
-        category: 'Technical',
-        priority: 'High',
-        description: 'Our automated nightly sync received HTTP 429 Too Many Requests response starting midnight.',
-        screenshotUrl: '',
-        customer: customer3._id,
-        department: techDept._id,
-        status: 'Open',
-        reopenCount: 0,
-        createdAt: hoursAgo(2),
-      },
+      { ticketId: 'TKT-1001', title: 'VPN login failing on macOS', category: 'Technical', priority: 'High', description: 'Receiving Error 403 authorization failed on VPN.', customer: user1._id, department: d4._id, status: 'Open', createdAt: hoursAgo(24) },
+      { ticketId: 'TKT-1002', title: 'Billed twice for subscription', category: 'Billing', priority: 'High', description: 'Duplicate charge of $120 on invoice INV-9821.', customer: user2._id, department: d2._id, status: 'In Progress', createdAt: hoursAgo(18) },
+      { ticketId: 'TKT-1003', title: 'Sticky spacebar on laptop', category: 'Hardware', priority: 'Low', description: 'Laptop keys sticking and need servicing.', customer: user3._id, department: d1._id, status: 'Resolved', createdAt: hoursAgo(48), resolvedAt: hoursAgo(42) },
+      { ticketId: 'TKT-1004', title: 'Password reset link expired', category: 'Account', priority: 'Medium', description: 'Token expires instantly upon receipt.', customer: user1._id, department: d3._id, status: 'Open', createdAt: hoursAgo(10) },
+      { ticketId: 'TKT-1005', title: 'Second monitor request', category: 'Hardware', priority: 'Low', description: 'Need external display for testing.', customer: user2._id, department: d1._id, status: 'Closed', createdAt: hoursAgo(72), resolvedAt: hoursAgo(64) },
+      { ticketId: 'TKT-1006', title: 'Stripe 3DS checkout timeout', category: 'Billing', priority: 'High', description: 'Card verification gets stuck in spinner.', customer: user3._id, department: d2._id, status: 'In Progress', createdAt: hoursAgo(14) },
+      { ticketId: 'TKT-1007', title: '2FA SMS code delayed', category: 'Account', priority: 'High', description: 'SMS OTP delayed by 30 minutes.', customer: user1._id, department: d3._id, status: 'Resolved', createdAt: hoursAgo(30), resolvedAt: hoursAgo(27) },
+      { ticketId: 'TKT-1008', title: 'PDF export broken characters', category: 'Technical', priority: 'Medium', description: 'Unicode font renders as boxes.', customer: user2._id, department: d1._id, status: 'Open', createdAt: hoursAgo(6) },
+      { ticketId: 'TKT-1009', title: 'Change invoice billing address', category: 'Billing', priority: 'Low', description: 'Need address updated to Bangalore.', customer: user3._id, department: d2._id, status: 'Resolved', createdAt: hoursAgo(50), resolvedAt: hoursAgo(45) },
+      { ticketId: 'TKT-1010', title: 'Slow dashboard loading', category: 'Technical', priority: 'Medium', description: 'Analytics takes 8s to render.', customer: user1._id, department: d4._id, status: 'In Progress', createdAt: hoursAgo(12) },
+      { ticketId: 'TKT-1011', title: 'Team member onboarding query', category: 'General', priority: 'Low', description: 'How to add 5 new interns to team.', customer: user2._id, department: d3._id, status: 'Closed', createdAt: hoursAgo(90), resolvedAt: hoursAgo(86) },
+      { ticketId: 'TKT-1012', title: 'Webhook API rate limited', category: 'Technical', priority: 'High', description: 'Sync job received 429 response.', customer: user3._id, department: d1._id, status: 'Open', createdAt: hoursAgo(2) }
     ];
 
-    const createdTickets = await Ticket.insertMany(sampleTickets);
+    const created = await Ticket.insertMany(sampleTickets);
 
-    const sampleComments = [
-      {
-        ticket: createdTickets[0]._id,
-        user: admin._id,
-        text: 'Hello John, we have verified your VPN certificate. Please re-download the profile from the intranet portal.',
-      },
-      {
-        ticket: createdTickets[0]._id,
-        user: customer1._id,
-        text: 'Thank you! Trying that now, will update if it still throws 403.',
-      },
-      {
-        ticket: createdTickets[1]._id,
-        user: admin._id,
-        text: 'We found the duplicate charge in our Stripe records. A refund for $120 has been initiated.',
-      },
-      {
-        ticket: createdTickets[2]._id,
-        user: admin._id,
-        text: 'Workstation laptop keyboard was serviced and keys were replaced by IT technician.',
-      },
-    ];
+    await Comment.insertMany([
+      { ticket: created[0]._id, user: admin._id, text: 'We verified your VPN access profile. Please try re-downloading.' },
+      { ticket: created[0]._id, user: user1._id, text: 'Thank you, checking now.' },
+      { ticket: created[1]._id, user: admin._id, text: 'Duplicate charge verified, refund initiated.' },
+      { ticket: created[2]._id, user: admin._id, text: 'Keyboard serviced by technician.' }
+    ]);
 
-    await Comment.insertMany(sampleComments);
     process.exit(0);
   } catch (error) {
-    console.error('Error during seeding:', error);
+    console.error(error);
     process.exit(1);
   }
 };

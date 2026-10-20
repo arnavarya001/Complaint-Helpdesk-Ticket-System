@@ -1,103 +1,65 @@
 import React, { useState } from 'react';
-import { Link, useNavigate, useLocation } from 'react-router-dom';
+import { Link, useNavigate } from 'react-router-dom';
 import { loginUser } from '../api/authApi';
-import Alert from '../components/Alert';
 
 export default function Login({ onLoginSuccess }) {
-  const [formData, setFormData] = useState({ email: '', password: '' });
-  const [loading, setLoading] = useState(false);
+  const [email, setEmail] = useState('');
+  const [password, setPassword] = useState('');
   const [error, setError] = useState('');
+  const [loading, setLoading] = useState(false);
   const navigate = useNavigate();
-  const location = useLocation();
-
-  const handleChange = (e) => {
-    setFormData((prev) => ({ ...prev, [e.target.name]: e.target.value }));
-    if (error) setError('');
-  };
-
-  const fillCredentials = (email, password) => {
-    setFormData({ email, password });
-    setError('');
-  };
 
   const handleSubmit = async (e) => {
     e.preventDefault();
     setLoading(true);
     setError('');
     try {
-      const data = await loginUser(formData);
+      const data = await loginUser({ email, password });
       onLoginSuccess(data, data.token);
-      const from = location.state?.from?.pathname;
-      if (from) {
-        navigate(from, { replace: true });
-      } else if (data.role === 'admin') {
-        navigate('/admin/dashboard', { replace: true });
-      } else {
-        navigate('/tickets', { replace: true });
-      }
+      navigate(data.role === 'admin' ? '/admin/dashboard' : '/tickets');
     } catch (err) {
-      setError(err.message || 'Failed to login. Please check your credentials.');
+      setError(err.message || 'Login failed');
     } finally {
       setLoading(false);
     }
   };
 
+  const fillCreds = (eMail, pwd) => {
+    setEmail(eMail);
+    setPassword(pwd);
+  };
+
   return (
     <div className="auth-page-container">
       <div className="auth-card card">
-        <div className="auth-header">
-          <div className="auth-icon-badge">🔐</div>
-          <h2 className="auth-title">Welcome Back</h2>
-          <p className="auth-subtitle">Sign in to manage complaints and support tickets</p>
-        </div>
-        {error && <Alert type="error" message={error} onClose={() => setError('')} />}
-        <form onSubmit={handleSubmit} className="auth-form">
+        <h2 style={{ textAlign: 'center' }}>HelpDesk Login</h2>
+        {error && <p style={{ color: 'red', textAlign: 'center', marginTop: '10px' }}>{error}</p>}
+
+        <form onSubmit={handleSubmit} style={{ marginTop: '15px' }}>
           <div className="form-group">
-            <label htmlFor="login-email" className="form-label">Email Address</label>
-            <input
-              id="login-email"
-              type="email"
-              name="email"
-              value={formData.email}
-              onChange={handleChange}
-              placeholder="name@example.com"
-              required
-              className="form-input"
-              autoComplete="email"
-            />
+            <label className="form-label">Email:</label>
+            <input type="email" value={email} onChange={(e) => setEmail(e.target.value)} required className="form-input" />
           </div>
           <div className="form-group">
-            <label htmlFor="login-password" className="form-label">Password</label>
-            <input
-              id="login-password"
-              type="password"
-              name="password"
-              value={formData.password}
-              onChange={handleChange}
-              placeholder="••••••••"
-              required
-              className="form-input"
-              autoComplete="current-password"
-            />
+            <label className="form-label">Password:</label>
+            <input type="password" value={password} onChange={(e) => setPassword(e.target.value)} required className="form-input" />
           </div>
           <button type="submit" disabled={loading} className="btn btn-primary btn-block">
-            {loading ? 'Authenticating...' : 'Sign In'}
+            {loading ? 'Logging in...' : 'Login'}
           </button>
         </form>
-        <div className="test-credentials-box">
-          <span className="test-credentials-title">Quick Demo Login:</span>
-          <div className="test-btn-group">
-            <button type="button" className="btn btn-chip" onClick={() => fillCredentials('admin@helpdesk.com', 'admin123')}>
-              👑 Fill Admin (admin@helpdesk.com)
-            </button>
-            <button type="button" className="btn btn-chip" onClick={() => fillCredentials('john@example.com', 'user123')}>
-              👤 Fill Customer (john@example.com)
-            </button>
+
+        <div style={{ marginTop: '15px', textAlign: 'center', fontSize: '13px' }}>
+          <p>Demo Fill:</p>
+          <div style={{ display: 'flex', gap: '8px', justifyContent: 'center', marginTop: '5px' }}>
+            <button type="button" onClick={() => fillCreds('admin@helpdesk.com', 'admin123')} className="btn btn-secondary btn-xs">Admin</button>
+            <button type="button" onClick={() => fillCreds('john@example.com', 'user123')} className="btn btn-secondary btn-xs">Customer</button>
           </div>
         </div>
-        <div className="auth-footer">
-          <p>Don't have an account yet? <Link to="/register" className="auth-link">Create an account</Link></p>
-        </div>
+
+        <p style={{ marginTop: '15px', textAlign: 'center', fontSize: '14px' }}>
+          No account? <Link to="/register">Register here</Link>
+        </p>
       </div>
     </div>
   );

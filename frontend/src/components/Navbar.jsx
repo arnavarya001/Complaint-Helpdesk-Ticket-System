@@ -1,114 +1,46 @@
-import React, { useState } from 'react';
-import { NavLink, Link, useNavigate } from 'react-router-dom';
+import React from 'react';
+import { Link, useNavigate } from 'react-router-dom';
 
 export default function Navbar({ user, onLogout }) {
-  const [mobileMenuOpen, setMobileMenuOpen] = useState(false);
   const navigate = useNavigate();
 
-  const handleLogoutClick = () => {
+  const handleLogout = () => {
     onLogout();
     navigate('/login');
   };
 
-  const closeMenu = () => setMobileMenuOpen(false);
-
   return (
     <header className="site-header">
-      <div className="navbar-container">
-        <Link to={user ? (user.role === 'admin' ? '/admin/dashboard' : '/tickets') : '/login'} className="navbar-brand" onClick={closeMenu}>
-          <div className="brand-logo-icon">🎧</div>
-          <div className="brand-text">
-            <span className="brand-title">HelpDesk</span>
-            <span className="brand-sub">Ticket System</span>
-          </div>
+      <div className="navbar-container" style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center' }}>
+        <Link to={user ? (user.role === 'admin' ? '/admin/dashboard' : '/tickets') : '/login'} className="navbar-brand">
+          🎧 <strong>HelpDesk</strong>
         </Link>
-        <button
-          className="mobile-toggle-btn"
-          onClick={() => setMobileMenuOpen(!mobileMenuOpen)}
-          aria-label="Toggle navigation menu"
-        >
-          {mobileMenuOpen ? '✕' : '☰'}
-        </button>
-        <nav className={`navbar-nav ${mobileMenuOpen ? 'is-open' : ''}`}>
+
+        <nav style={{ display: 'flex', gap: '15px', alignItems: 'center' }}>
           {user ? (
             <>
-              {user.role === 'customer' && (
-                <div className="nav-group">
-                  <NavLink
-                    to="/tickets"
-                    end
-                    className={({ isActive }) => (isActive ? 'nav-link active' : 'nav-link')}
-                    onClick={closeMenu}
-                  >
-                    My Tickets
-                  </NavLink>
-                  <NavLink
-                    to="/tickets/new"
-                    className={({ isActive }) => (isActive ? 'nav-link active' : 'nav-link')}
-                    onClick={closeMenu}
-                  >
-                    + New Ticket
-                  </NavLink>
-                </div>
+              {user.role === 'customer' ? (
+                <>
+                  <Link to="/tickets" className="nav-link">My Tickets</Link>
+                  <Link to="/tickets/new" className="nav-link">+ New Ticket</Link>
+                </>
+              ) : (
+                <>
+                  <Link to="/admin/dashboard" className="nav-link">Dashboard</Link>
+                  <Link to="/admin/tickets" className="nav-link">Manage Tickets</Link>
+                  <Link to="/admin/departments" className="nav-link">Departments</Link>
+                </>
               )}
-              {user.role === 'admin' && (
-                <div className="nav-group">
-                  <NavLink
-                    to="/admin/dashboard"
-                    className={({ isActive }) => (isActive ? 'nav-link active' : 'nav-link')}
-                    onClick={closeMenu}
-                  >
-                    Dashboard
-                  </NavLink>
-                  <NavLink
-                    to="/admin/tickets"
-                    className={({ isActive }) => (isActive ? 'nav-link active' : 'nav-link')}
-                    onClick={closeMenu}
-                  >
-                    Manage Tickets
-                  </NavLink>
-                  <NavLink
-                    to="/admin/departments"
-                    className={({ isActive }) => (isActive ? 'nav-link active' : 'nav-link')}
-                    onClick={closeMenu}
-                  >
-                    Departments
-                  </NavLink>
-                </div>
-              )}
-              <div className="nav-user-panel">
-                <div className="user-info-chip">
-                  <div className="user-avatar-circle">
-                    {user.name ? user.name.charAt(0).toUpperCase() : 'U'}
-                  </div>
-                  <div className="user-details-text">
-                    <span className="user-name">{user.name}</span>
-                    <span className={`user-role-tag role-${user.role}`}>{user.role}</span>
-                  </div>
-                </div>
-                <button
-                  type="button"
-                  onClick={handleLogoutClick}
-                  className="btn btn-logout"
-                  title="Sign out of your account"
-                >
-                  Logout
-                </button>
-              </div>
+              <span style={{ fontSize: '13px', color: '#94a3b8' }}>
+                {user.name} ({user.role})
+              </span>
+              <button onClick={handleLogout} className="btn btn-secondary btn-xs">Logout</button>
             </>
           ) : (
-            <div className="nav-group nav-auth-group">
-              <NavLink
-                to="/login"
-                className={({ isActive }) => (isActive ? 'nav-link active' : 'nav-link')}
-                onClick={closeMenu}
-              >
-                Login
-              </NavLink>
-              <NavLink to="/register" className="btn btn-primary btn-sm" onClick={closeMenu}>
-                Register
-              </NavLink>
-            </div>
+            <>
+              <Link to="/login" className="nav-link">Login</Link>
+              <Link to="/register" className="btn btn-primary btn-xs">Register</Link>
+            </>
           )}
         </nav>
       </div>

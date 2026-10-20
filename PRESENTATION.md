@@ -143,8 +143,8 @@
   - Compliant with all 18 development steps and assignment specifications.
 - **Project Links:**
   - **GitHub Repository:** `https://github.com/arnavarya001/Complaint-Helpdesk-Ticket-System`
-  - **Live Web Application:** `[Insert Your Vercel URL]`
-  - **Demo Credentials:** Admin: `admin@helpdesk.com` / Customer: `john@example.com`
+  - **Live Web Application:** `https://complaint-helpdesk-ticket-system.vercel.app/`
+  - **Live Backend API:** `https://complaint-helpdesk-ticket-system.onrender.com/`
 - **Thank You! Questions & Discussion**
 - **Speaker Notes:**  
   *"Thank you for your time. The application is running locally and deployed to the web, ready for live demonstration. I am happy to answer any questions."*

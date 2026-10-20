@@ -286,7 +286,7 @@ Assignment-6/
 - **GitHub Repository**: [Complaint-Helpdesk-Ticket-System](https://github.com/arnavarya001/Complaint-Helpdesk-Ticket-System)
 - **Live Backend API**: [https://complaint-helpdesk-ticket-system.onrender.com/](https://complaint-helpdesk-ticket-system.onrender.com/)
 - **Live Backend Health Check**: [https://complaint-helpdesk-ticket-system.onrender.com/api](https://complaint-helpdesk-ticket-system.onrender.com/api)
-- **Live Frontend App**: [Complaint Helpdesk Portal](https://complaint-helpdesk-system.vercel.app)
+- **Live Frontend App**: [https://complaint-helpdesk-ticket-system.vercel.app/](https://complaint-helpdesk-ticket-system.vercel.app/)
 
 ---
 

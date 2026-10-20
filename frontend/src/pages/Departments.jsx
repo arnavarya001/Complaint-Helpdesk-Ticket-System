@@ -1,184 +1,102 @@
 import React, { useState, useEffect } from 'react';
-import { getDepartments, createDepartment, updateDepartment, deleteDepartment } from '../api/departmentApi';
-import LoadingSpinner from '../components/LoadingSpinner';
-import EmptyState from '../components/EmptyState';
-import Alert from '../components/Alert';
+import { getDepartments, createDepartment, deleteDepartment } from '../api/departmentApi';
 
 export default function Departments() {
   const [departments, setDepartments] = useState([]);
-  const [loading, setLoading] = useState(true);
-  const [error, setError] = useState('');
-  const [successMsg, setSuccessMsg] = useState('');
-  const [isEditing, setIsEditing] = useState(false);
-  const [editId, setEditId] = useState(null);
-  const [formData, setFormData] = useState({ name: '', description: '' });
-  const [submitting, setSubmitting] = useState(false);
+  const [name, setName] = useState('');
+  const [description, setDescription] = useState('');
+  const [msg, setMsg] = useState('');
 
-  const fetchDeptList = async () => {
+  const loadDepts = async () => {
     try {
-      setLoading(true);
-      setError('');
       const data = await getDepartments();
       setDepartments(data);
     } catch (err) {
-      setError(err.message || 'Failed to fetch departments.');
-    } finally {
-      setLoading(false);
+      console.error(err);
     }
   };
 
-  useEffect(() => {
-    fetchDeptList();
-  }, []);
-
-  const handleChange = (e) => {
-    setFormData((prev) => ({ ...prev, [e.target.name]: e.target.value }));
-    if (error) setError('');
-  };
-
-  const handleStartEdit = (dept) => {
-    setIsEditing(true);
-    setEditId(dept._id);
-    setFormData({ name: dept.name, description: dept.description || '' });
-    window.scrollTo({ top: 0, behavior: 'smooth' });
-  };
-
-  const handleCancel = () => {
-    setIsEditing(false);
-    setEditId(null);
-    setFormData({ name: '', description: '' });
-  };
+  useEffect(() => { loadDepts(); }, []);
 
   const handleSubmit = async (e) => {
     e.preventDefault();
-    if (!formData.name.trim()) return;
-    setSubmitting(true);
-    setError('');
+    if (!name.trim()) return;
     try {
-      if (isEditing) {
-        await updateDepartment(editId, formData);
-        setSuccessMsg(`Department "${formData.name}" updated successfully.`);
-      } else {
-        await createDepartment(formData);
-        setSuccessMsg(`Department "${formData.name}" created successfully.`);
-      }
-      handleCancel();
-      await fetchDeptList();
-      setTimeout(() => setSuccessMsg(''), 3500);
+      await createDepartment({ name, description });
+      setName('');
+      setDescription('');
+      setMsg('Department created successfully!');
+      loadDepts();
     } catch (err) {
-      setError(err.message || 'Failed to save department.');
-    } finally {
-      setSubmitting(false);
+      setMsg(err.message || 'Creation failed');
     }
   };
 
-  const handleDelete = async (dept) => {
-    if (!window.confirm(`Are you sure you want to delete "${dept.name}"? Any tickets assigned to this department will be marked as unassigned.`)) {
-      return;
-    }
+  const handleDelete = async (id, dName) => {
+    if (!window.confirm(`Delete department "${dName}"?`)) return;
     try {
-      await deleteDepartment(dept._id);
-      setSuccessMsg(`Department "${dept.name}" deleted.`);
-      setDepartments((prev) => prev.filter((d) => d._id !== dept._id));
-      setTimeout(() => setSuccessMsg(''), 3500);
+      await deleteDepartment(id);
+      setDepartments(departments.filter((d) => d._id !== id));
+      setMsg('Department deleted');
     } catch (err) {
-      setError(err.message || 'Failed to delete department.');
-      setTimeout(() => setError(''), 4000);
+      setMsg(err.message || 'Delete failed');
     }
   };
 
   return (
     <div className="page-container">
-      <div className="page-header">
-        <div>
-          <h1 className="page-title">Department Management</h1>
-          <p className="page-subtitle">Create, update, and manage support departments used for categorizing and dispatching tickets</p>
-        </div>
-      </div>
-      {successMsg && <Alert type="success" message={successMsg} onClose={() => setSuccessMsg('')} />}
-      {error && <Alert type="error" message={error} onClose={() => setError('')} />}
-      <div className="dept-form-card card">
-        <h3 className="section-title">{isEditing ? '✏️ Edit Department' : '➕ Create New Department'}</h3>
-        <form onSubmit={handleSubmit} className="dept-form">
-          <div className="form-row-2">
-            <div className="form-group">
-              <label htmlFor="dept-name" className="form-label">
-                Department Name <span className="required">*</span>
-              </label>
-              <input
-                id="dept-name"
-                type="text"
-                name="name"
-                value={formData.name}
-                onChange={handleChange}
-                placeholder="e.g. Technical Support, Billing & Accounts"
-                required
-                className="form-input"
-              />
-            </div>
-            <div className="form-group">
-              <label htmlFor="dept-desc" className="form-label">Description</label>
-              <input
-                id="dept-desc"
-                type="text"
-                name="description"
-                value={formData.description}
-                onChange={handleChange}
-                placeholder="Brief description of department scope"
-                className="form-input"
-              />
-            </div>
-          </div>
-          <div className="form-actions">
-            <button type="submit" disabled={submitting} className="btn btn-primary">
-              {submitting ? 'Saving...' : isEditing ? 'Update Department' : 'Create Department'}
-            </button>
-            {isEditing && (
-              <button type="button" onClick={handleCancel} className="btn btn-secondary">
-                Cancel Edit
-              </button>
-            )}
-          </div>
+      <h1 className="page-title">Departments</h1>
+      {msg && <p style={{ color: msg.includes('fail') ? 'red' : 'green', margin: '10px 0' }}>{msg}</p>}
+
+      <div className="card" style={{ marginTop: '15px' }}>
+        <h3>Create New Department</h3>
+        <form onSubmit={handleSubmit} style={{ display: 'flex', gap: '10px', marginTop: '10px', flexWrap: 'wrap' }}>
+          <input
+            type="text"
+            placeholder="Department Name"
+            value={name}
+            onChange={(e) => setName(e.target.value)}
+            className="form-input"
+            required
+            style={{ maxWidth: '250px' }}
+          />
+          <input
+            type="text"
+            placeholder="Description (optional)"
+            value={description}
+            onChange={(e) => setDescription(e.target.value)}
+            className="form-input"
+            style={{ maxWidth: '300px' }}
+          />
+          <button type="submit" className="btn btn-primary btn-sm">Add Department</button>
         </form>
       </div>
-      <div className="dept-section-header">
-        <h2>Active Support Departments ({departments.length})</h2>
+
+      <div className="card" style={{ marginTop: '20px' }}>
+        <h3>Active Departments ({departments.length})</h3>
+        <table className="data-table" style={{ marginTop: '10px' }}>
+          <thead>
+            <tr>
+              <th>Name</th>
+              <th>Description</th>
+              <th>Active Tickets</th>
+              <th>Action</th>
+            </tr>
+          </thead>
+          <tbody>
+            {departments.map((d) => (
+              <tr key={d._id}>
+                <td><strong>{d.name}</strong></td>
+                <td>{d.description || 'N/A'}</td>
+                <td>{d.ticketCount || 0}</td>
+                <td>
+                  <button onClick={() => handleDelete(d._id, d.name)} className="btn btn-danger-outline btn-xs">Delete</button>
+                </td>
+              </tr>
+            ))}
+          </tbody>
+        </table>
       </div>
-      {loading ? (
-        <LoadingSpinner message="Loading departments..." />
-      ) : departments.length === 0 ? (
-        <EmptyState
-          title="No Departments Created"
-          description="Create your first department above to start assigning tickets."
-          icon="🏢"
-        />
-      ) : (
-        <div className="dept-grid">
-          {departments.map((dept) => (
-            <div key={dept._id} className="dept-card card">
-              <div className="dept-card-top">
-                <div className="dept-icon">🏢</div>
-                <div className="dept-ticket-count-badge">
-                  {dept.ticketCount || 0} active ticket{dept.ticketCount === 1 ? '' : 's'}
-                </div>
-              </div>
-              <h3 className="dept-card-name">{dept.name}</h3>
-              <p className="dept-card-desc">{dept.description || 'No description provided.'}</p>
-              <div className="dept-card-footer">
-                <span className="dept-date">Created: {new Date(dept.createdAt).toLocaleDateString()}</span>
-                <div className="dept-actions">
-                  <button type="button" onClick={() => handleStartEdit(dept)} className="btn btn-secondary btn-xs">
-                    Edit
-                  </button>
-                  <button type="button" onClick={() => handleDelete(dept)} className="btn btn-danger-outline btn-xs">
-                    Delete
-                  </button>
-                </div>
-              </div>
-            </div>
-          ))}
-        </div>
-      )}
     </div>
   );
 }

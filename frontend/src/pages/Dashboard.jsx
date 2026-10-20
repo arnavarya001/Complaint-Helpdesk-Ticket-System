@@ -1,283 +1,103 @@
 import React, { useState, useEffect } from 'react';
 import { Link } from 'react-router-dom';
 import { getDashboardStats } from '../api/dashboardApi';
-import StatusBadge from '../components/StatusBadge';
-import PriorityBadge from '../components/PriorityBadge';
-import LoadingSpinner from '../components/LoadingSpinner';
-import Alert from '../components/Alert';
 
 export default function Dashboard() {
   const [stats, setStats] = useState(null);
   const [loading, setLoading] = useState(true);
-  const [error, setError] = useState('');
 
-  const fetchStats = async () => {
+  const loadStats = async () => {
     try {
       setLoading(true);
-      setError('');
       const data = await getDashboardStats();
       setStats(data);
     } catch (err) {
-      setError(err.message || 'Failed to load dashboard metrics.');
+      console.error(err);
     } finally {
       setLoading(false);
     }
   };
 
-  useEffect(() => {
-    fetchStats();
-  }, []);
+  useEffect(() => { loadStats(); }, []);
 
-  if (loading) {
-    return (
-      <div className="page-container">
-        <LoadingSpinner message="Calculating dashboard statistics from database records..." />
-      </div>
-    );
-  }
+  if (loading) return <div className="page-container"><p>Loading dashboard...</p></div>;
+  if (!stats) return <div className="page-container"><p>Failed to load metrics.</p></div>;
 
-  if (error || !stats) {
-    return (
-      <div className="page-container">
-        <Alert type="error" message={error || 'Unable to load statistics.'} />
-        <button type="button" onClick={fetchStats} className="btn btn-primary">Retry</button>
-      </div>
-    );
-  }
-
-  const { summary, statusBreakdown, priorityBreakdown, categoryBreakdown, recentTickets } = stats;
-  const total = summary.totalTickets || 1;
+  const { summary, priorityBreakdown, categoryBreakdown, recentTickets } = stats;
 
   return (
     <div className="page-container">
       <div className="page-header">
-        <div>
-          <h1 className="page-title">Admin Support Dashboard</h1>
-          <p className="page-subtitle">Real-time analytics, queue distribution, and SLA resolution performance</p>
-        </div>
-        <button type="button" onClick={fetchStats} className="btn btn-secondary btn-sm">
-          🔄 Refresh Metrics
-        </button>
+        <h1 className="page-title">Admin Support Dashboard</h1>
+        <button onClick={loadStats} className="btn btn-secondary btn-sm">Refresh</button>
       </div>
 
       <div className="metrics-grid">
         <div className="metric-card card">
-          <div className="metric-header">
-            <span className="metric-title">Total Complaints</span>
-            <span className="metric-icon">📑</span>
-          </div>
+          <span className="metric-title">Total Tickets</span>
           <div className="metric-value">{summary.totalTickets}</div>
-          <div className="metric-sub">Across all customer accounts</div>
         </div>
-
         <div className="metric-card card card-blue">
-          <div className="metric-header">
-            <span className="metric-title">Open Tickets</span>
-            <span className="metric-icon">📬</span>
-          </div>
+          <span className="metric-title">Open Tickets</span>
           <div className="metric-value text-blue">{summary.openCount}</div>
-          <div className="metric-sub">{((summary.openCount / total) * 100).toFixed(0)}% of total complaints</div>
         </div>
-
         <div className="metric-card card card-amber">
-          <div className="metric-header">
-            <span className="metric-title">In Progress</span>
-            <span className="metric-icon">⏳</span>
-          </div>
+          <span className="metric-title">In Progress</span>
           <div className="metric-value text-amber">{summary.inProgressCount}</div>
-          <div className="metric-sub">Currently under investigation</div>
         </div>
-
         <div className="metric-card card card-green">
-          <div className="metric-header">
-            <span className="metric-title">Resolved Tickets</span>
-            <span className="metric-icon">✅</span>
-          </div>
+          <span className="metric-title">Resolved</span>
           <div className="metric-value text-green">{summary.resolvedCount}</div>
-          <div className="metric-sub">{((summary.resolvedCount / total) * 100).toFixed(0)}% resolution rate</div>
         </div>
-
         <div className="metric-card card card-purple">
-          <div className="metric-header">
-            <span className="metric-title">Avg Resolution Time</span>
-            <span className="metric-icon">⚡</span>
-          </div>
-          <div className="metric-value text-purple">
-            {summary.avgResolutionHours} <span className="metric-unit">hrs</span>
-          </div>
-          <div className="metric-sub">From ticket creation to resolution</div>
-        </div>
-
-        <div className="metric-card card">
-          <div className="metric-header">
-            <span className="metric-title">Closed (Archived)</span>
-            <span className="metric-icon">📁</span>
-          </div>
-          <div className="metric-value text-muted">{summary.closedCount}</div>
-          <div className="metric-sub">Read-only finished tickets</div>
+          <span className="metric-title">Avg Resolution</span>
+          <div className="metric-value text-purple">{summary.avgResolutionHours} hrs</div>
         </div>
       </div>
 
-      <div className="analytics-charts-grid">
-        <div className="chart-card card">
-          <h3 className="section-title">Status Breakdown (Open vs Resolved)</h3>
-          <p className="chart-subtitle">Distribution of complaints across ticket lifecycle</p>
-          <div className="chart-bars-list">
-            <div className="chart-bar-item">
-              <div className="bar-labels">
-                <span className="bar-label-name">Open</span>
-                <span className="bar-label-val">
-                  {statusBreakdown['Open']} ({((statusBreakdown['Open'] / total) * 100).toFixed(0)}%)
-                </span>
-              </div>
-              <div className="bar-track">
-                <div className="bar-fill bg-cyan" style={{ width: `${(statusBreakdown['Open'] / total) * 100}%` }}></div>
-              </div>
-            </div>
-
-            <div className="chart-bar-item">
-              <div className="bar-labels">
-                <span className="bar-label-name">In Progress</span>
-                <span className="bar-label-val">
-                  {statusBreakdown['In Progress']} ({((statusBreakdown['In Progress'] / total) * 100).toFixed(0)}%)
-                </span>
-              </div>
-              <div className="bar-track">
-                <div className="bar-fill bg-amber" style={{ width: `${(statusBreakdown['In Progress'] / total) * 100}%` }}></div>
-              </div>
-            </div>
-
-            <div className="chart-bar-item">
-              <div className="bar-labels">
-                <span className="bar-label-name">Resolved</span>
-                <span className="bar-label-val">
-                  {statusBreakdown['Resolved']} ({((statusBreakdown['Resolved'] / total) * 100).toFixed(0)}%)
-                </span>
-              </div>
-              <div className="bar-track">
-                <div className="bar-fill bg-emerald" style={{ width: `${(statusBreakdown['Resolved'] / total) * 100}%` }}></div>
-              </div>
-            </div>
-
-            <div className="chart-bar-item">
-              <div className="bar-labels">
-                <span className="bar-label-name">Closed</span>
-                <span className="bar-label-val">
-                  {statusBreakdown['Closed']} ({((statusBreakdown['Closed'] / total) * 100).toFixed(0)}%)
-                </span>
-              </div>
-              <div className="bar-track">
-                <div className="bar-fill bg-slate" style={{ width: `${(statusBreakdown['Closed'] / total) * 100}%` }}></div>
-              </div>
-            </div>
-          </div>
+      <div style={{ display: 'grid', gridTemplateColumns: 'repeat(auto-fit, minmax(280px, 1fr))', gap: '20px', marginTop: '20px' }}>
+        <div className="card">
+          <h3>Priority Breakdown</h3>
+          <ul style={{ listStyle: 'none', padding: 0, marginTop: '10px' }}>
+            <li><strong>High:</strong> {priorityBreakdown['High'] || 0} tickets</li>
+            <li><strong>Medium:</strong> {priorityBreakdown['Medium'] || 0} tickets</li>
+            <li><strong>Low:</strong> {priorityBreakdown['Low'] || 0} tickets</li>
+          </ul>
         </div>
-
-        <div className="chart-card card">
-          <h3 className="section-title">Priority Breakdown</h3>
-          <p className="chart-subtitle">Urgency levels of customer complaints</p>
-          <div className="chart-bars-list">
-            <div className="chart-bar-item">
-              <div className="bar-labels">
-                <span className="bar-label-name text-red">High Priority</span>
-                <span className="bar-label-val font-semibold">{priorityBreakdown['High'] || 0} tickets</span>
-              </div>
-              <div className="bar-track">
-                <div className="bar-fill bg-rose" style={{ width: `${((priorityBreakdown['High'] || 0) / total) * 100}%` }}></div>
-              </div>
-            </div>
-
-            <div className="chart-bar-item">
-              <div className="bar-labels">
-                <span className="bar-label-name text-amber">Medium Priority</span>
-                <span className="bar-label-val font-semibold">{priorityBreakdown['Medium'] || 0} tickets</span>
-              </div>
-              <div className="bar-track">
-                <div className="bar-fill bg-amber" style={{ width: `${((priorityBreakdown['Medium'] || 0) / total) * 100}%` }}></div>
-              </div>
-            </div>
-
-            <div className="chart-bar-item">
-              <div className="bar-labels">
-                <span className="bar-label-name text-blue">Low Priority</span>
-                <span className="bar-label-val font-semibold">{priorityBreakdown['Low'] || 0} tickets</span>
-              </div>
-              <div className="bar-track">
-                <div className="bar-fill bg-blue" style={{ width: `${((priorityBreakdown['Low'] || 0) / total) * 100}%` }}></div>
-              </div>
-            </div>
-          </div>
-        </div>
-
-        <div className="chart-card card">
-          <h3 className="section-title">Category Breakdown</h3>
-          <p className="chart-subtitle">Complaint volume categorized by problem domain</p>
-          <div className="category-tags-grid">
+        <div className="card">
+          <h3>Category Breakdown</h3>
+          <ul style={{ listStyle: 'none', padding: 0, marginTop: '10px' }}>
             {Object.entries(categoryBreakdown).map(([cat, count]) => (
-              <div key={cat} className="category-stat-pill">
-                <span className="cat-pill-name">{cat}</span>
-                <span className="cat-pill-count">{count}</span>
-              </div>
+              <li key={cat}><strong>{cat}:</strong> {count} tickets</li>
             ))}
-          </div>
-        </div>
-
-        <div className="chart-card card">
-          <h3 className="section-title">System Infrastructure</h3>
-          <p className="chart-subtitle">Operational departments and userbase stats</p>
-          <div className="infra-stats-grid">
-            <div className="infra-box">
-              <span className="infra-num">{summary.totalDepartments}</span>
-              <span className="infra-label">Active Departments</span>
-              <Link to="/admin/departments" className="infra-link">Manage Departments &rarr;</Link>
-            </div>
-            <div className="infra-box">
-              <span className="infra-num">{summary.totalCustomers}</span>
-              <span className="infra-label">Registered Customers</span>
-              <span className="infra-sub">Active Portal Users</span>
-            </div>
-          </div>
+          </ul>
         </div>
       </div>
 
-      <div className="recent-tickets-section card">
-        <div className="recent-header">
-          <div>
-            <h3 className="section-title">Recent Tickets</h3>
-            <span className="recent-subtitle">Latest complaints received in the system</span>
-          </div>
-          <Link to="/admin/tickets" className="btn btn-outline btn-sm">
-            View All {summary.totalTickets} Tickets &rarr;
-          </Link>
-        </div>
-        <div className="table-wrapper">
-          <table className="data-table">
-            <thead>
-              <tr>
-                <th>Ticket ID</th>
-                <th>Subject</th>
-                <th>Customer</th>
-                <th>Department</th>
-                <th>Priority</th>
-                <th>Status</th>
-                <th>Action</th>
+      <div className="card" style={{ marginTop: '20px' }}>
+        <h3>Recent Complaints</h3>
+        <table className="data-table" style={{ marginTop: '10px' }}>
+          <thead>
+            <tr>
+              <th>ID</th>
+              <th>Title</th>
+              <th>Customer</th>
+              <th>Priority</th>
+              <th>Status</th>
+            </tr>
+          </thead>
+          <tbody>
+            {recentTickets.map((t) => (
+              <tr key={t._id}>
+                <td><Link to={`/tickets/${t._id}`}>{t.ticketId}</Link></td>
+                <td>{t.title}</td>
+                <td>{t.customer ? t.customer.name : 'Unknown'}</td>
+                <td>{t.priority}</td>
+                <td><span className={`status-badge badge-status-${t.status.toLowerCase().replace(' ', '-')}`}>{t.status}</span></td>
               </tr>
-            </thead>
-            <tbody>
-              {recentTickets.map((t) => (
-                <tr key={t._id}>
-                  <td><span className="table-ticket-id">{t.ticketId}</span></td>
-                  <td><Link to={`/tickets/${t._id}`} className="table-ticket-title">{t.title}</Link></td>
-                  <td>{t.customer ? t.customer.name : 'Unknown'}</td>
-                  <td>{t.department ? t.department.name : 'Unassigned'}</td>
-                  <td><PriorityBadge priority={t.priority} /></td>
-                  <td><StatusBadge status={t.status} /></td>
-                  <td><Link to={`/tickets/${t._id}`} className="btn btn-outline btn-xs">View</Link></td>
-                </tr>
-              ))}
-            </tbody>
-          </table>
-        </div>
+            ))}
+          </tbody>
+        </table>
       </div>
     </div>
   );

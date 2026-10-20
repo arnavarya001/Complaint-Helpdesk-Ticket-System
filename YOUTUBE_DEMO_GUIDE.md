@@ -126,8 +126,8 @@ Demonstration and architectural walkthrough of a complete MERN stack web applica
 - **Problem Statement:** PS08 — Complaint & Helpdesk Ticket System
 
 🔗 **Project Links:**
+- **Live Frontend App:** https://complaint-helpdesk-ticket-system.vercel.app/
 - **Live Backend API (Render):** https://complaint-helpdesk-ticket-system.onrender.com/
-- **Live Application:** https://your-deployment.vercel.app
 - **GitHub Repository:** https://github.com/arnavarya001/Complaint-Helpdesk-Ticket-System
 - **Presentation Deck (PPT):** [Insert Google Drive Link - Anyone with link Viewer]
 
