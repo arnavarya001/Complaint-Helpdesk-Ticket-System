@@ -22,8 +22,6 @@ export default function Navbar({ user, onLogout }) {
             <span className="brand-sub">Ticket System</span>
           </div>
         </Link>
-
-        {/* Mobile Hamburger Button */}
         <button
           className="mobile-toggle-btn"
           onClick={() => setMobileMenuOpen(!mobileMenuOpen)}
@@ -31,8 +29,6 @@ export default function Navbar({ user, onLogout }) {
         >
           {mobileMenuOpen ? '✕' : '☰'}
         </button>
-
-        {/* Navigation Links */}
         <nav className={`navbar-nav ${mobileMenuOpen ? 'is-open' : ''}`}>
           {user ? (
             <>
@@ -41,57 +37,45 @@ export default function Navbar({ user, onLogout }) {
                   <NavLink
                     to="/tickets"
                     end
-                    className={({ isActive }) =>
-                      isActive ? 'nav-link active' : 'nav-link'
-                    }
+                    className={({ isActive }) => (isActive ? 'nav-link active' : 'nav-link')}
                     onClick={closeMenu}
                   >
                     My Tickets
                   </NavLink>
                   <NavLink
                     to="/tickets/new"
-                    className={({ isActive }) =>
-                      isActive ? 'nav-link active' : 'nav-link'
-                    }
+                    className={({ isActive }) => (isActive ? 'nav-link active' : 'nav-link')}
                     onClick={closeMenu}
                   >
                     + New Ticket
                   </NavLink>
                 </div>
               )}
-
               {user.role === 'admin' && (
                 <div className="nav-group">
                   <NavLink
                     to="/admin/dashboard"
-                    className={({ isActive }) =>
-                      isActive ? 'nav-link active' : 'nav-link'
-                    }
+                    className={({ isActive }) => (isActive ? 'nav-link active' : 'nav-link')}
                     onClick={closeMenu}
                   >
                     Dashboard
                   </NavLink>
                   <NavLink
                     to="/admin/tickets"
-                    className={({ isActive }) =>
-                      isActive ? 'nav-link active' : 'nav-link'
-                    }
+                    className={({ isActive }) => (isActive ? 'nav-link active' : 'nav-link')}
                     onClick={closeMenu}
                   >
                     Manage Tickets
                   </NavLink>
                   <NavLink
                     to="/admin/departments"
-                    className={({ isActive }) =>
-                      isActive ? 'nav-link active' : 'nav-link'
-                    }
+                    className={({ isActive }) => (isActive ? 'nav-link active' : 'nav-link')}
                     onClick={closeMenu}
                   >
                     Departments
                   </NavLink>
                 </div>
               )}
-
               <div className="nav-user-panel">
                 <div className="user-info-chip">
                   <div className="user-avatar-circle">
@@ -99,9 +83,7 @@ export default function Navbar({ user, onLogout }) {
                   </div>
                   <div className="user-details-text">
                     <span className="user-name">{user.name}</span>
-                    <span className={`user-role-tag role-${user.role}`}>
-                      {user.role}
-                    </span>
+                    <span className={`user-role-tag role-${user.role}`}>{user.role}</span>
                   </div>
                 </div>
                 <button
@@ -118,18 +100,12 @@ export default function Navbar({ user, onLogout }) {
             <div className="nav-group nav-auth-group">
               <NavLink
                 to="/login"
-                className={({ isActive }) =>
-                  isActive ? 'nav-link active' : 'nav-link'
-                }
+                className={({ isActive }) => (isActive ? 'nav-link active' : 'nav-link')}
                 onClick={closeMenu}
               >
                 Login
               </NavLink>
-              <NavLink
-                to="/register"
-                className="btn btn-primary btn-sm"
-                onClick={closeMenu}
-              >
+              <NavLink to="/register" className="btn btn-primary btn-sm" onClick={closeMenu}>
                 Register
               </NavLink>
             </div>

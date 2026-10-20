@@ -1,17 +1,6 @@
 import { api } from './client';
 
-export const getDepartments = async () => {
-  return await api.get('/departments');
-};
-
-export const createDepartment = async (departmentData) => {
-  return await api.post('/departments', departmentData);
-};
-
-export const updateDepartment = async (id, departmentData) => {
-  return await api.put(`/departments/${id}`, departmentData);
-};
-
-export const deleteDepartment = async (id) => {
-  return await api.delete(`/departments/${id}`);
-};
+export const getDepartments = async () => api.get('/departments');
+export const createDepartment = async (data) => api.post('/departments', data);
+export const updateDepartment = async (id, data) => api.put(`/departments/${id}`, data);
+export const deleteDepartment = async (id) => api.delete(`/departments/${id}`);

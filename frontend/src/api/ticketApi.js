@@ -6,27 +6,12 @@ export const getTickets = async (filters = {}) => {
   if (filters.priority && filters.priority !== 'All') query.append('priority', filters.priority);
   if (filters.category && filters.category !== 'All') query.append('category', filters.category);
   if (filters.search) query.append('search', filters.search);
-
   const queryString = query.toString() ? `?${query.toString()}` : '';
-  return await api.get(`/tickets${queryString}`);
+  return api.get(`/tickets${queryString}`);
 };
 
-export const getTicketById = async (id) => {
-  return await api.get(`/tickets/${id}`);
-};
-
-export const createTicket = async (ticketData) => {
-  return await api.post('/tickets', ticketData);
-};
-
-export const updateTicket = async (id, ticketData) => {
-  return await api.put(`/tickets/${id}`, ticketData);
-};
-
-export const reopenTicket = async (id) => {
-  return await api.post(`/tickets/${id}/reopen`, {});
-};
-
-export const deleteTicket = async (id) => {
-  return await api.delete(`/tickets/${id}`);
-};
+export const getTicketById = async (id) => api.get(`/tickets/${id}`);
+export const createTicket = async (data) => api.post('/tickets', data);
+export const updateTicket = async (id, data) => api.put(`/tickets/${id}`, data);
+export const reopenTicket = async (id) => api.post(`/tickets/${id}/reopen`, {});
+export const deleteTicket = async (id) => api.delete(`/tickets/${id}`);

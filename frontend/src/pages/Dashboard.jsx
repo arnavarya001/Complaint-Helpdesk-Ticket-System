@@ -40,43 +40,26 @@ export default function Dashboard() {
     return (
       <div className="page-container">
         <Alert type="error" message={error || 'Unable to load statistics.'} />
-        <button type="button" onClick={fetchStats} className="btn btn-primary">
-          Retry
-        </button>
+        <button type="button" onClick={fetchStats} className="btn btn-primary">Retry</button>
       </div>
     );
   }
 
-  const {
-    summary,
-    statusBreakdown,
-    priorityBreakdown,
-    categoryBreakdown,
-    recentTickets,
-  } = stats;
-
-  const total = summary.totalTickets || 1; // Prevent division by zero
+  const { summary, statusBreakdown, priorityBreakdown, categoryBreakdown, recentTickets } = stats;
+  const total = summary.totalTickets || 1;
 
   return (
     <div className="page-container">
-      {/* Header */}
       <div className="page-header">
         <div>
           <h1 className="page-title">Admin Support Dashboard</h1>
-          <p className="page-subtitle">
-            Real-time analytics, queue distribution, and SLA resolution performance
-          </p>
+          <p className="page-subtitle">Real-time analytics, queue distribution, and SLA resolution performance</p>
         </div>
-        <button
-          type="button"
-          onClick={fetchStats}
-          className="btn btn-secondary btn-sm"
-        >
+        <button type="button" onClick={fetchStats} className="btn btn-secondary btn-sm">
           🔄 Refresh Metrics
         </button>
       </div>
 
-      {/* Primary KPI Metric Cards */}
       <div className="metrics-grid">
         <div className="metric-card card">
           <div className="metric-header">
@@ -93,9 +76,7 @@ export default function Dashboard() {
             <span className="metric-icon">📬</span>
           </div>
           <div className="metric-value text-blue">{summary.openCount}</div>
-          <div className="metric-sub">
-            {((summary.openCount / total) * 100).toFixed(0)}% of total complaints
-          </div>
+          <div className="metric-sub">{((summary.openCount / total) * 100).toFixed(0)}% of total complaints</div>
         </div>
 
         <div className="metric-card card card-amber">
@@ -113,9 +94,7 @@ export default function Dashboard() {
             <span className="metric-icon">✅</span>
           </div>
           <div className="metric-value text-green">{summary.resolvedCount}</div>
-          <div className="metric-sub">
-            {((summary.resolvedCount / total) * 100).toFixed(0)}% resolution rate
-          </div>
+          <div className="metric-sub">{((summary.resolvedCount / total) * 100).toFixed(0)}% resolution rate</div>
         </div>
 
         <div className="metric-card card card-purple">
@@ -139,13 +118,10 @@ export default function Dashboard() {
         </div>
       </div>
 
-      {/* Analytics Breakdown Grid */}
       <div className="analytics-charts-grid">
-        {/* Status Breakdown Bar Card */}
         <div className="chart-card card">
           <h3 className="section-title">Status Breakdown (Open vs Resolved)</h3>
           <p className="chart-subtitle">Distribution of complaints across ticket lifecycle</p>
-
           <div className="chart-bars-list">
             <div className="chart-bar-item">
               <div className="bar-labels">
@@ -155,10 +131,7 @@ export default function Dashboard() {
                 </span>
               </div>
               <div className="bar-track">
-                <div
-                  className="bar-fill bg-cyan"
-                  style={{ width: `${(statusBreakdown['Open'] / total) * 100}%` }}
-                ></div>
+                <div className="bar-fill bg-cyan" style={{ width: `${(statusBreakdown['Open'] / total) * 100}%` }}></div>
               </div>
             </div>
 
@@ -170,10 +143,7 @@ export default function Dashboard() {
                 </span>
               </div>
               <div className="bar-track">
-                <div
-                  className="bar-fill bg-amber"
-                  style={{ width: `${(statusBreakdown['In Progress'] / total) * 100}%` }}
-                ></div>
+                <div className="bar-fill bg-amber" style={{ width: `${(statusBreakdown['In Progress'] / total) * 100}%` }}></div>
               </div>
             </div>
 
@@ -185,10 +155,7 @@ export default function Dashboard() {
                 </span>
               </div>
               <div className="bar-track">
-                <div
-                  className="bar-fill bg-emerald"
-                  style={{ width: `${(statusBreakdown['Resolved'] / total) * 100}%` }}
-                ></div>
+                <div className="bar-fill bg-emerald" style={{ width: `${(statusBreakdown['Resolved'] / total) * 100}%` }}></div>
               </div>
             </div>
 
@@ -200,73 +167,51 @@ export default function Dashboard() {
                 </span>
               </div>
               <div className="bar-track">
-                <div
-                  className="bar-fill bg-slate"
-                  style={{ width: `${(statusBreakdown['Closed'] / total) * 100}%` }}
-                ></div>
+                <div className="bar-fill bg-slate" style={{ width: `${(statusBreakdown['Closed'] / total) * 100}%` }}></div>
               </div>
             </div>
           </div>
         </div>
 
-        {/* Priority Breakdown Card */}
         <div className="chart-card card">
           <h3 className="section-title">Priority Breakdown</h3>
           <p className="chart-subtitle">Urgency levels of customer complaints</p>
-
           <div className="chart-bars-list">
             <div className="chart-bar-item">
               <div className="bar-labels">
                 <span className="bar-label-name text-red">High Priority</span>
-                <span className="bar-label-val font-semibold">
-                  {priorityBreakdown['High'] || 0} tickets
-                </span>
+                <span className="bar-label-val font-semibold">{priorityBreakdown['High'] || 0} tickets</span>
               </div>
               <div className="bar-track">
-                <div
-                  className="bar-fill bg-rose"
-                  style={{ width: `${((priorityBreakdown['High'] || 0) / total) * 100}%` }}
-                ></div>
+                <div className="bar-fill bg-rose" style={{ width: `${((priorityBreakdown['High'] || 0) / total) * 100}%` }}></div>
               </div>
             </div>
 
             <div className="chart-bar-item">
               <div className="bar-labels">
                 <span className="bar-label-name text-amber">Medium Priority</span>
-                <span className="bar-label-val font-semibold">
-                  {priorityBreakdown['Medium'] || 0} tickets
-                </span>
+                <span className="bar-label-val font-semibold">{priorityBreakdown['Medium'] || 0} tickets</span>
               </div>
               <div className="bar-track">
-                <div
-                  className="bar-fill bg-amber"
-                  style={{ width: `${((priorityBreakdown['Medium'] || 0) / total) * 100}%` }}
-                ></div>
+                <div className="bar-fill bg-amber" style={{ width: `${((priorityBreakdown['Medium'] || 0) / total) * 100}%` }}></div>
               </div>
             </div>
 
             <div className="chart-bar-item">
               <div className="bar-labels">
                 <span className="bar-label-name text-blue">Low Priority</span>
-                <span className="bar-label-val font-semibold">
-                  {priorityBreakdown['Low'] || 0} tickets
-                </span>
+                <span className="bar-label-val font-semibold">{priorityBreakdown['Low'] || 0} tickets</span>
               </div>
               <div className="bar-track">
-                <div
-                  className="bar-fill bg-blue"
-                  style={{ width: `${((priorityBreakdown['Low'] || 0) / total) * 100}%` }}
-                ></div>
+                <div className="bar-fill bg-blue" style={{ width: `${((priorityBreakdown['Low'] || 0) / total) * 100}%` }}></div>
               </div>
             </div>
           </div>
         </div>
 
-        {/* Category Breakdown Card */}
         <div className="chart-card card">
           <h3 className="section-title">Category Breakdown</h3>
           <p className="chart-subtitle">Complaint volume categorized by problem domain</p>
-
           <div className="category-tags-grid">
             {Object.entries(categoryBreakdown).map(([cat, count]) => (
               <div key={cat} className="category-stat-pill">
@@ -277,18 +222,14 @@ export default function Dashboard() {
           </div>
         </div>
 
-        {/* Department & Operational Overview */}
         <div className="chart-card card">
           <h3 className="section-title">System Infrastructure</h3>
           <p className="chart-subtitle">Operational departments and userbase stats</p>
-
           <div className="infra-stats-grid">
             <div className="infra-box">
               <span className="infra-num">{summary.totalDepartments}</span>
               <span className="infra-label">Active Departments</span>
-              <Link to="/admin/departments" className="infra-link">
-                Manage Departments &rarr;
-              </Link>
+              <Link to="/admin/departments" className="infra-link">Manage Departments &rarr;</Link>
             </div>
             <div className="infra-box">
               <span className="infra-num">{summary.totalCustomers}</span>
@@ -299,7 +240,6 @@ export default function Dashboard() {
         </div>
       </div>
 
-      {/* Recent Tickets Table */}
       <div className="recent-tickets-section card">
         <div className="recent-header">
           <div>
@@ -310,7 +250,6 @@ export default function Dashboard() {
             View All {summary.totalTickets} Tickets &rarr;
           </Link>
         </div>
-
         <div className="table-wrapper">
           <table className="data-table">
             <thead>
@@ -327,27 +266,13 @@ export default function Dashboard() {
             <tbody>
               {recentTickets.map((t) => (
                 <tr key={t._id}>
-                  <td>
-                    <span className="table-ticket-id">{t.ticketId}</span>
-                  </td>
-                  <td>
-                    <Link to={`/tickets/${t._id}`} className="table-ticket-title">
-                      {t.title}
-                    </Link>
-                  </td>
+                  <td><span className="table-ticket-id">{t.ticketId}</span></td>
+                  <td><Link to={`/tickets/${t._id}`} className="table-ticket-title">{t.title}</Link></td>
                   <td>{t.customer ? t.customer.name : 'Unknown'}</td>
                   <td>{t.department ? t.department.name : 'Unassigned'}</td>
-                  <td>
-                    <PriorityBadge priority={t.priority} />
-                  </td>
-                  <td>
-                    <StatusBadge status={t.status} />
-                  </td>
-                  <td>
-                    <Link to={`/tickets/${t._id}`} className="btn btn-outline btn-xs">
-                      View
-                    </Link>
-                  </td>
+                  <td><PriorityBadge priority={t.priority} /></td>
+                  <td><StatusBadge status={t.status} /></td>
+                  <td><Link to={`/tickets/${t._id}`} className="btn btn-outline btn-xs">View</Link></td>
                 </tr>
               ))}
             </tbody>

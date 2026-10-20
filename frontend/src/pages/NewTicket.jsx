@@ -11,7 +11,6 @@ export default function NewTicket() {
   const handleCreate = async (formData) => {
     setSubmitting(true);
     setError('');
-
     try {
       const created = await createTicket(formData);
       navigate(`/tickets/${created._id}`);
@@ -27,12 +26,9 @@ export default function NewTicket() {
       <div className="page-header">
         <div>
           <h1 className="page-title">Submit New Complaint / Ticket</h1>
-          <p className="page-subtitle">
-            Provide details of your problem so our support team can investigate and assist.
-          </p>
+          <p className="page-subtitle">Provide details of your problem so our support team can investigate and assist.</p>
         </div>
       </div>
-
       <TicketForm
         onSubmit={handleCreate}
         isSubmitting={submitting}

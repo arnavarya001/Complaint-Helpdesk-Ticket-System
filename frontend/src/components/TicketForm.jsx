@@ -23,14 +23,7 @@ export default function TicketForm({
     screenshotUrl: initialData.screenshotUrl || '',
   });
 
-  const categories = [
-    'General',
-    'Technical',
-    'Billing',
-    'Account',
-    'Hardware',
-  ];
-
+  const categories = ['General', 'Technical', 'Billing', 'Account', 'Hardware'];
   const priorities = ['Low', 'Medium', 'High'];
 
   const handleChange = (e) => {
@@ -46,7 +39,6 @@ export default function TicketForm({
   return (
     <form onSubmit={handleSubmit} className="ticket-form card">
       {errorMessage && <Alert type="error" message={errorMessage} />}
-
       <div className="form-group">
         <label htmlFor="ticket-title" className="form-label">
           Ticket Title <span className="required">*</span>
@@ -64,7 +56,6 @@ export default function TicketForm({
         />
         <small className="form-hint">Keep the title clear and concise (max 120 chars).</small>
       </div>
-
       <div className="form-row-2">
         <div className="form-group">
           <label htmlFor="ticket-category" className="form-label">
@@ -78,13 +69,10 @@ export default function TicketForm({
             className="form-select"
           >
             {categories.map((cat) => (
-              <option key={cat} value={cat}>
-                {cat}
-              </option>
+              <option key={cat} value={cat}>{cat}</option>
             ))}
           </select>
         </div>
-
         <div className="form-group">
           <label htmlFor="ticket-priority" className="form-label">
             Priority <span className="required">*</span>
@@ -97,14 +85,11 @@ export default function TicketForm({
             className="form-select"
           >
             {priorities.map((p) => (
-              <option key={p} value={p}>
-                {p} Priority
-              </option>
+              <option key={p} value={p}>{p} Priority</option>
             ))}
           </select>
         </div>
       </div>
-
       <div className="form-group">
         <label htmlFor="ticket-desc" className="form-label">
           Detailed Description <span className="required">*</span>
@@ -120,7 +105,6 @@ export default function TicketForm({
           className="form-textarea"
         ></textarea>
       </div>
-
       <div className="form-group">
         <label htmlFor="ticket-screenshot" className="form-label">
           Screenshot or Image URL (Optional)
@@ -134,11 +118,8 @@ export default function TicketForm({
           placeholder="https://example.com/screenshot.png"
           className="form-input"
         />
-        <small className="form-hint">
-          Provide a direct link to an uploaded screenshot or image if relevant.
-        </small>
+        <small className="form-hint">Provide a direct link to an uploaded screenshot or image if relevant.</small>
       </div>
-
       {formData.screenshotUrl && (
         <div className="screenshot-preview-box">
           <span className="preview-label">Image Preview:</span>
@@ -146,28 +127,16 @@ export default function TicketForm({
             src={formData.screenshotUrl}
             alt="Ticket attachment preview"
             className="preview-img"
-            onError={(e) => {
-              e.target.style.display = 'none';
-            }}
+            onError={(e) => { e.target.style.display = 'none'; }}
           />
         </div>
       )}
-
       <div className="form-actions">
-        <button
-          type="submit"
-          disabled={isSubmitting}
-          className="btn btn-primary"
-        >
+        <button type="submit" disabled={isSubmitting} className="btn btn-primary">
           {isSubmitting ? 'Saving...' : submitLabel}
         </button>
         {onCancel && (
-          <button
-            type="button"
-            onClick={onCancel}
-            disabled={isSubmitting}
-            className="btn btn-secondary"
-          >
+          <button type="button" onClick={onCancel} disabled={isSubmitting} className="btn btn-secondary">
             Cancel
           </button>
         )}

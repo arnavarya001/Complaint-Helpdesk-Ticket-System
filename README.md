@@ -276,7 +276,7 @@ Assignment-6/
 2. Set **Root Directory** to `frontend`.
 3. Framework Preset: **Vite**.
 4. Add environment variable:
-   - `VITE_API_URL`: Your deployed Render backend URL + `/api` (e.g. `https://helpdesk-backend.onrender.com/api`).
+   - `VITE_API_URL`: `https://complaint-helpdesk-ticket-system.onrender.com/api`
 5. Deploy. `vercel.json` will ensure direct refreshes on dynamic URLs (e.g. `/tickets/6ad71...`) redirect to `index.html`.
 
 ---
@@ -284,8 +284,9 @@ Assignment-6/
 ## 9. Live Deployment URL
 
 - **GitHub Repository**: [Complaint-Helpdesk-Ticket-System](https://github.com/arnavarya001/Complaint-Helpdesk-Ticket-System)
-- **Frontend Live App**: [Live Demo](https://complaint-helpdesk-system.vercel.app)
-- **Backend API URL**: [Backend Health Check](https://complaint-helpdesk-system.onrender.com/)
+- **Live Backend API**: [https://complaint-helpdesk-ticket-system.onrender.com/](https://complaint-helpdesk-ticket-system.onrender.com/)
+- **Live Backend Health Check**: [https://complaint-helpdesk-ticket-system.onrender.com/api](https://complaint-helpdesk-ticket-system.onrender.com/api)
+- **Live Frontend App**: [Complaint Helpdesk Portal](https://complaint-helpdesk-system.vercel.app)
 
 ---
 

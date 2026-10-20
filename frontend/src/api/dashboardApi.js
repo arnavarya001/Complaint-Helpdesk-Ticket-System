@@ -1,5 +1,3 @@
 import { api } from './client';
 
-export const getDashboardStats = async () => {
-  return await api.get('/dashboard/stats');
-};
+export const getDashboardStats = async () => api.get('/dashboard/stats');

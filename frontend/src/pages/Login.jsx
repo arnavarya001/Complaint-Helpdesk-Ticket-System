@@ -7,7 +7,6 @@ export default function Login({ onLoginSuccess }) {
   const [formData, setFormData] = useState({ email: '', password: '' });
   const [loading, setLoading] = useState(false);
   const [error, setError] = useState('');
-
   const navigate = useNavigate();
   const location = useLocation();
 
@@ -25,12 +24,9 @@ export default function Login({ onLoginSuccess }) {
     e.preventDefault();
     setLoading(true);
     setError('');
-
     try {
       const data = await loginUser(formData);
       onLoginSuccess(data, data.token);
-
-      // Redirect to intended page or role default
       const from = location.state?.from?.pathname;
       if (from) {
         navigate(from, { replace: true });
@@ -54,14 +50,10 @@ export default function Login({ onLoginSuccess }) {
           <h2 className="auth-title">Welcome Back</h2>
           <p className="auth-subtitle">Sign in to manage complaints and support tickets</p>
         </div>
-
         {error && <Alert type="error" message={error} onClose={() => setError('')} />}
-
         <form onSubmit={handleSubmit} className="auth-form">
           <div className="form-group">
-            <label htmlFor="login-email" className="form-label">
-              Email Address
-            </label>
+            <label htmlFor="login-email" className="form-label">Email Address</label>
             <input
               id="login-email"
               type="email"
@@ -74,11 +66,8 @@ export default function Login({ onLoginSuccess }) {
               autoComplete="email"
             />
           </div>
-
           <div className="form-group">
-            <label htmlFor="login-password" className="form-label">
-              Password
-            </label>
+            <label htmlFor="login-password" className="form-label">Password</label>
             <input
               id="login-password"
               type="password"
@@ -91,44 +80,23 @@ export default function Login({ onLoginSuccess }) {
               autoComplete="current-password"
             />
           </div>
-
-          <button
-            type="submit"
-            disabled={loading}
-            className="btn btn-primary btn-block"
-          >
+          <button type="submit" disabled={loading} className="btn btn-primary btn-block">
             {loading ? 'Authenticating...' : 'Sign In'}
           </button>
         </form>
-
-        {/* Quick Test Credential Pills for Easy Demonstration */}
         <div className="test-credentials-box">
           <span className="test-credentials-title">Quick Demo Login:</span>
           <div className="test-btn-group">
-            <button
-              type="button"
-              className="btn btn-chip"
-              onClick={() => fillCredentials('admin@helpdesk.com', 'admin123')}
-            >
+            <button type="button" className="btn btn-chip" onClick={() => fillCredentials('admin@helpdesk.com', 'admin123')}>
               👑 Fill Admin (admin@helpdesk.com)
             </button>
-            <button
-              type="button"
-              className="btn btn-chip"
-              onClick={() => fillCredentials('john@example.com', 'user123')}
-            >
+            <button type="button" className="btn btn-chip" onClick={() => fillCredentials('john@example.com', 'user123')}>
               👤 Fill Customer (john@example.com)
             </button>
           </div>
         </div>
-
         <div className="auth-footer">
-          <p>
-            Don't have an account yet?{' '}
-            <Link to="/register" className="auth-link">
-              Create an account
-            </Link>
-          </p>
+          <p>Don't have an account yet? <Link to="/register" className="auth-link">Create an account</Link></p>
         </div>
       </div>
     </div>

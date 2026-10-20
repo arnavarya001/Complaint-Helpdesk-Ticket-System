@@ -14,8 +14,6 @@ export default function AdminTickets() {
   const [loading, setLoading] = useState(true);
   const [error, setError] = useState('');
   const [successMsg, setSuccessMsg] = useState('');
-
-  // Filters
   const [statusFilter, setStatusFilter] = useState('All');
   const [priorityFilter, setPriorityFilter] = useState('All');
   const [categoryFilter, setCategoryFilter] = useState('All');
@@ -82,7 +80,6 @@ export default function AdminTickets() {
 
   const handleDelete = async (ticketId, id) => {
     if (!window.confirm(`Delete ticket ${ticketId}?`)) return;
-
     try {
       await deleteTicket(id);
       setTickets((prev) => prev.filter((t) => t._id !== id));
@@ -99,19 +96,14 @@ export default function AdminTickets() {
       <div className="page-header">
         <div>
           <h1 className="page-title">Admin Ticket Management</h1>
-          <p className="page-subtitle">
-            View, filter, triage, assign departments, and resolve customer support complaints
-          </p>
+          <p className="page-subtitle">View, filter, triage, assign departments, and resolve customer support complaints</p>
         </div>
         <div className="header-meta-badge">
           Total Matching: <strong>{tickets.length}</strong>
         </div>
       </div>
-
       {successMsg && <Alert type="success" message={successMsg} onClose={() => setSuccessMsg('')} />}
       {error && <Alert type="error" message={error} onClose={() => setError('')} />}
-
-      {/* Filter and Search Bar */}
       <div className="filter-bar card">
         <form onSubmit={handleSearch} className="search-box">
           <input
@@ -121,15 +113,10 @@ export default function AdminTickets() {
             placeholder="Search title, ID, or user..."
             className="form-input search-input"
           />
-          <button type="submit" className="btn btn-secondary btn-sm">
-            Search
-          </button>
+          <button type="submit" className="btn btn-secondary btn-sm">Search</button>
         </form>
-
         <div className="filter-group">
-          <label htmlFor="admin-filter-status" className="filter-label">
-            Status:
-          </label>
+          <label htmlFor="admin-filter-status" className="filter-label">Status:</label>
           <select
             id="admin-filter-status"
             value={statusFilter}
@@ -143,11 +130,8 @@ export default function AdminTickets() {
             <option value="Closed">Closed</option>
           </select>
         </div>
-
         <div className="filter-group">
-          <label htmlFor="admin-filter-priority" className="filter-label">
-            Priority:
-          </label>
+          <label htmlFor="admin-filter-priority" className="filter-label">Priority:</label>
           <select
             id="admin-filter-priority"
             value={priorityFilter}
@@ -160,11 +144,8 @@ export default function AdminTickets() {
             <option value="Low">Low</option>
           </select>
         </div>
-
         <div className="filter-group">
-          <label htmlFor="admin-filter-cat" className="filter-label">
-            Category:
-          </label>
+          <label htmlFor="admin-filter-cat" className="filter-label">Category:</label>
           <select
             id="admin-filter-cat"
             value={categoryFilter}
@@ -180,8 +161,6 @@ export default function AdminTickets() {
           </select>
         </div>
       </div>
-
-      {/* Main Content Area */}
       {loading ? (
         <LoadingSpinner message="Loading all tickets..." />
       ) : tickets.length === 0 ? (
@@ -209,31 +188,17 @@ export default function AdminTickets() {
                 <tr key={t._id}>
                   <td className="table-id-cell">
                     <span className="table-ticket-id">{t.ticketId}</span>
-                    <span className="table-date">
-                      {new Date(t.createdAt).toLocaleDateString()}
-                    </span>
+                    <span className="table-date">{new Date(t.createdAt).toLocaleDateString()}</span>
                   </td>
-
                   <td className="table-subject-cell">
-                    <Link to={`/tickets/${t._id}`} className="table-ticket-title">
-                      {t.title}
-                    </Link>
+                    <Link to={`/tickets/${t._id}`} className="table-ticket-title">{t.title}</Link>
                     <div className="table-customer-meta">
                       👤 {t.customer ? t.customer.name : 'Unknown'}{' '}
-                      <span className="table-customer-email">
-                        ({t.customer ? t.customer.email : ''})
-                      </span>
+                      <span className="table-customer-email">({t.customer ? t.customer.email : ''})</span>
                     </div>
                   </td>
-
-                  <td>
-                    <span className="category-chip">{t.category}</span>
-                  </td>
-
-                  <td>
-                    <PriorityBadge priority={t.priority} />
-                  </td>
-
+                  <td><span className="category-chip">{t.category}</span></td>
+                  <td><PriorityBadge priority={t.priority} /></td>
                   <td>
                     {t.status === 'Closed' ? (
                       <StatusBadge status="Closed" />
@@ -250,12 +215,9 @@ export default function AdminTickets() {
                       </select>
                     )}
                   </td>
-
                   <td>
                     {t.status === 'Closed' ? (
-                      <span className="dept-tag">
-                        {t.department ? t.department.name : 'Unassigned'}
-                      </span>
+                      <span className="dept-tag">{t.department ? t.department.name : 'Unassigned'}</span>
                     ) : (
                       <select
                         value={t.department ? t.department._id : ''}
@@ -264,21 +226,13 @@ export default function AdminTickets() {
                       >
                         <option value="">Unassigned</option>
                         {departments.map((dept) => (
-                          <option key={dept._id} value={dept._id}>
-                            {dept.name}
-                          </option>
+                          <option key={dept._id} value={dept._id}>{dept.name}</option>
                         ))}
                       </select>
                     )}
                   </td>
-
                   <td className="table-actions-cell">
-                    <Link
-                      to={`/tickets/${t._id}`}
-                      className="btn btn-outline btn-xs"
-                    >
-                      Manage
-                    </Link>
+                    <Link to={`/tickets/${t._id}`} className="btn btn-outline btn-xs">Manage</Link>
                     <button
                       type="button"
                       onClick={() => handleDelete(t.ticketId, t._id)}

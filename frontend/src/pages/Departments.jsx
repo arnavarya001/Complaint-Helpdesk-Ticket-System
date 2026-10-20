@@ -1,10 +1,5 @@
 import React, { useState, useEffect } from 'react';
-import {
-  getDepartments,
-  createDepartment,
-  updateDepartment,
-  deleteDepartment,
-} from '../api/departmentApi';
+import { getDepartments, createDepartment, updateDepartment, deleteDepartment } from '../api/departmentApi';
 import LoadingSpinner from '../components/LoadingSpinner';
 import EmptyState from '../components/EmptyState';
 import Alert from '../components/Alert';
@@ -14,8 +9,6 @@ export default function Departments() {
   const [loading, setLoading] = useState(true);
   const [error, setError] = useState('');
   const [successMsg, setSuccessMsg] = useState('');
-
-  // Form state
   const [isEditing, setIsEditing] = useState(false);
   const [editId, setEditId] = useState(null);
   const [formData, setFormData] = useState({ name: '', description: '' });
@@ -59,10 +52,8 @@ export default function Departments() {
   const handleSubmit = async (e) => {
     e.preventDefault();
     if (!formData.name.trim()) return;
-
     setSubmitting(true);
     setError('');
-
     try {
       if (isEditing) {
         await updateDepartment(editId, formData);
@@ -71,7 +62,6 @@ export default function Departments() {
         await createDepartment(formData);
         setSuccessMsg(`Department "${formData.name}" created successfully.`);
       }
-
       handleCancel();
       await fetchDeptList();
       setTimeout(() => setSuccessMsg(''), 3500);
@@ -83,14 +73,9 @@ export default function Departments() {
   };
 
   const handleDelete = async (dept) => {
-    if (
-      !window.confirm(
-        `Are you sure you want to delete "${dept.name}"? Any tickets assigned to this department will be marked as unassigned.`
-      )
-    ) {
+    if (!window.confirm(`Are you sure you want to delete "${dept.name}"? Any tickets assigned to this department will be marked as unassigned.`)) {
       return;
     }
-
     try {
       await deleteDepartment(dept._id);
       setSuccessMsg(`Department "${dept.name}" deleted.`);
@@ -107,21 +92,13 @@ export default function Departments() {
       <div className="page-header">
         <div>
           <h1 className="page-title">Department Management</h1>
-          <p className="page-subtitle">
-            Create, update, and manage support departments used for categorizing and dispatching tickets
-          </p>
+          <p className="page-subtitle">Create, update, and manage support departments used for categorizing and dispatching tickets</p>
         </div>
       </div>
-
       {successMsg && <Alert type="success" message={successMsg} onClose={() => setSuccessMsg('')} />}
       {error && <Alert type="error" message={error} onClose={() => setError('')} />}
-
-      {/* Add / Edit Department Card */}
       <div className="dept-form-card card">
-        <h3 className="section-title">
-          {isEditing ? '✏️ Edit Department' : '➕ Create New Department'}
-        </h3>
-
+        <h3 className="section-title">{isEditing ? '✏️ Edit Department' : '➕ Create New Department'}</h3>
         <form onSubmit={handleSubmit} className="dept-form">
           <div className="form-row-2">
             <div className="form-group">
@@ -139,11 +116,8 @@ export default function Departments() {
                 className="form-input"
               />
             </div>
-
             <div className="form-group">
-              <label htmlFor="dept-desc" className="form-label">
-                Description
-              </label>
+              <label htmlFor="dept-desc" className="form-label">Description</label>
               <input
                 id="dept-desc"
                 type="text"
@@ -155,37 +129,21 @@ export default function Departments() {
               />
             </div>
           </div>
-
           <div className="form-actions">
-            <button
-              type="submit"
-              disabled={submitting}
-              className="btn btn-primary"
-            >
-              {submitting
-                ? 'Saving...'
-                : isEditing
-                ? 'Update Department'
-                : 'Create Department'}
+            <button type="submit" disabled={submitting} className="btn btn-primary">
+              {submitting ? 'Saving...' : isEditing ? 'Update Department' : 'Create Department'}
             </button>
             {isEditing && (
-              <button
-                type="button"
-                onClick={handleCancel}
-                className="btn btn-secondary"
-              >
+              <button type="button" onClick={handleCancel} className="btn btn-secondary">
                 Cancel Edit
               </button>
             )}
           </div>
         </form>
       </div>
-
-      {/* Department Cards Listing */}
       <div className="dept-section-header">
         <h2>Active Support Departments ({departments.length})</h2>
       </div>
-
       {loading ? (
         <LoadingSpinner message="Loading departments..." />
       ) : departments.length === 0 ? (
@@ -204,29 +162,15 @@ export default function Departments() {
                   {dept.ticketCount || 0} active ticket{dept.ticketCount === 1 ? '' : 's'}
                 </div>
               </div>
-
               <h3 className="dept-card-name">{dept.name}</h3>
-              <p className="dept-card-desc">
-                {dept.description || 'No description provided.'}
-              </p>
-
+              <p className="dept-card-desc">{dept.description || 'No description provided.'}</p>
               <div className="dept-card-footer">
-                <span className="dept-date">
-                  Created: {new Date(dept.createdAt).toLocaleDateString()}
-                </span>
+                <span className="dept-date">Created: {new Date(dept.createdAt).toLocaleDateString()}</span>
                 <div className="dept-actions">
-                  <button
-                    type="button"
-                    onClick={() => handleStartEdit(dept)}
-                    className="btn btn-secondary btn-xs"
-                  >
+                  <button type="button" onClick={() => handleStartEdit(dept)} className="btn btn-secondary btn-xs">
                     Edit
                   </button>
-                  <button
-                    type="button"
-                    onClick={() => handleDelete(dept)}
-                    className="btn btn-danger-outline btn-xs"
-                  >
+                  <button type="button" onClick={() => handleDelete(dept)} className="btn btn-danger-outline btn-xs">
                     Delete
                   </button>
                 </div>

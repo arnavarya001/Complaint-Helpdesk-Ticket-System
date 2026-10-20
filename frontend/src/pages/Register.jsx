@@ -13,7 +13,6 @@ export default function Register({ onLoginSuccess }) {
   });
   const [loading, setLoading] = useState(false);
   const [error, setError] = useState('');
-
   const navigate = useNavigate();
 
   const handleChange = (e) => {
@@ -23,20 +22,16 @@ export default function Register({ onLoginSuccess }) {
 
   const handleSubmit = async (e) => {
     e.preventDefault();
-
     if (formData.password !== formData.confirmPassword) {
       setError('Passwords do not match. Please verify.');
       return;
     }
-
     if (formData.password.length < 6) {
       setError('Password must be at least 6 characters long.');
       return;
     }
-
     setLoading(true);
     setError('');
-
     try {
       const data = await registerUser({
         name: formData.name,
@@ -44,9 +39,7 @@ export default function Register({ onLoginSuccess }) {
         password: formData.password,
         role: formData.role,
       });
-
       onLoginSuccess(data, data.token);
-
       if (data.role === 'admin') {
         navigate('/admin/dashboard', { replace: true });
       } else {
@@ -67,14 +60,10 @@ export default function Register({ onLoginSuccess }) {
           <h2 className="auth-title">Create Account</h2>
           <p className="auth-subtitle">Join HelpDesk to submit and monitor your support tickets</p>
         </div>
-
         {error && <Alert type="error" message={error} onClose={() => setError('')} />}
-
         <form onSubmit={handleSubmit} className="auth-form">
           <div className="form-group">
-            <label htmlFor="reg-name" className="form-label">
-              Full Name <span className="required">*</span>
-            </label>
+            <label htmlFor="reg-name" className="form-label">Full Name <span className="required">*</span></label>
             <input
               id="reg-name"
               type="text"
@@ -86,11 +75,8 @@ export default function Register({ onLoginSuccess }) {
               className="form-input"
             />
           </div>
-
           <div className="form-group">
-            <label htmlFor="reg-email" className="form-label">
-              Email Address <span className="required">*</span>
-            </label>
+            <label htmlFor="reg-email" className="form-label">Email Address <span className="required">*</span></label>
             <input
               id="reg-email"
               type="email"
@@ -103,12 +89,9 @@ export default function Register({ onLoginSuccess }) {
               autoComplete="email"
             />
           </div>
-
           <div className="form-row-2">
             <div className="form-group">
-              <label htmlFor="reg-password" className="form-label">
-                Password <span className="required">*</span>
-              </label>
+              <label htmlFor="reg-password" className="form-label">Password <span className="required">*</span></label>
               <input
                 id="reg-password"
                 type="password"
@@ -121,11 +104,8 @@ export default function Register({ onLoginSuccess }) {
                 autoComplete="new-password"
               />
             </div>
-
             <div className="form-group">
-              <label htmlFor="reg-confirm" className="form-label">
-                Confirm Password <span className="required">*</span>
-              </label>
+              <label htmlFor="reg-confirm" className="form-label">Confirm Password <span className="required">*</span></label>
               <input
                 id="reg-confirm"
                 type="password"
@@ -139,11 +119,8 @@ export default function Register({ onLoginSuccess }) {
               />
             </div>
           </div>
-
           <div className="form-group">
-            <label htmlFor="reg-role" className="form-label">
-              Account Role
-            </label>
+            <label htmlFor="reg-role" className="form-label">Account Role</label>
             <select
               id="reg-role"
               name="role"
@@ -154,27 +131,13 @@ export default function Register({ onLoginSuccess }) {
               <option value="customer">Customer (Submit & track complaints)</option>
               <option value="admin">Support / Admin (Manage tickets & departments)</option>
             </select>
-            <small className="form-hint">
-              Select Admin for project demonstration of administrative tools.
-            </small>
           </div>
-
-          <button
-            type="submit"
-            disabled={loading}
-            className="btn btn-primary btn-block"
-          >
+          <button type="submit" disabled={loading} className="btn btn-primary btn-block">
             {loading ? 'Creating Account...' : 'Register'}
           </button>
         </form>
-
         <div className="auth-footer">
-          <p>
-            Already have an account?{' '}
-            <Link to="/login" className="auth-link">
-              Sign in here
-            </Link>
-          </p>
+          <p>Already have an account? <Link to="/login" className="auth-link">Sign in here</Link></p>
         </div>
       </div>
     </div>

@@ -12,21 +12,15 @@ const Comment = require('./models/Comment');
 const seedData = async () => {
   try {
     await mongoose.connect(process.env.MONGODB_URI);
-    console.log('Connected to MongoDB for seeding...');
-
-    // Clear existing data
     await User.deleteMany();
     await Department.deleteMany();
     await Ticket.deleteMany();
     await Comment.deleteMany();
-    console.log('Cleared existing collections.');
 
-    // Passwords hashing
     const salt = await bcrypt.genSalt(10);
     const adminPassword = await bcrypt.hash('admin123', salt);
     const userPassword = await bcrypt.hash('user123', salt);
 
-    // Create Users
     const admin = await User.create({
       name: 'Admin User',
       email: 'admin@helpdesk.com',
@@ -55,13 +49,6 @@ const seedData = async () => {
       role: 'customer',
     });
 
-    console.log('Users created:');
-    console.log(`- Admin: admin@helpdesk.com / admin123`);
-    console.log(`- Customer: john@example.com / user123`);
-    console.log(`- Customer: sarah@example.com / user123`);
-    console.log(`- Customer: alex@example.com / user123`);
-
-    // Create Departments
     const techDept = await Department.create({
       name: 'Technical Support',
       description: 'Hardware, software crashes, and network diagnostics',
@@ -82,13 +69,9 @@ const seedData = async () => {
       description: 'Server access, VPN setup, hardware provisioning, and security permissions',
     });
 
-    console.log('Departments created (4).');
-
-    // Helper timestamp offsets
     const now = Date.now();
     const hoursAgo = (h) => new Date(now - h * 60 * 60 * 1000);
 
-    // 12 Sample Tickets
     const sampleTickets = [
       {
         ticketId: 'TKT-1001',
@@ -128,7 +111,7 @@ const seedData = async () => {
         status: 'Resolved',
         reopenCount: 0,
         createdAt: hoursAgo(48),
-        resolvedAt: hoursAgo(42), // 6 hours resolution
+        resolvedAt: hoursAgo(42),
       },
       {
         ticketId: 'TKT-1004',
@@ -155,7 +138,7 @@ const seedData = async () => {
         status: 'Closed',
         reopenCount: 0,
         createdAt: hoursAgo(72),
-        resolvedAt: hoursAgo(64), // 8 hours resolution
+        resolvedAt: hoursAgo(64),
       },
       {
         ticketId: 'TKT-1006',
@@ -182,7 +165,7 @@ const seedData = async () => {
         status: 'Resolved',
         reopenCount: 0,
         createdAt: hoursAgo(30),
-        resolvedAt: hoursAgo(27), // 3 hours resolution
+        resolvedAt: hoursAgo(27),
       },
       {
         ticketId: 'TKT-1008',
@@ -209,7 +192,7 @@ const seedData = async () => {
         status: 'Resolved',
         reopenCount: 0,
         createdAt: hoursAgo(50),
-        resolvedAt: hoursAgo(45), // 5 hours resolution
+        resolvedAt: hoursAgo(45),
       },
       {
         ticketId: 'TKT-1010',
@@ -236,7 +219,7 @@ const seedData = async () => {
         status: 'Closed',
         reopenCount: 0,
         createdAt: hoursAgo(90),
-        resolvedAt: hoursAgo(86), // 4 hours resolution
+        resolvedAt: hoursAgo(86),
       },
       {
         ticketId: 'TKT-1012',
@@ -254,9 +237,7 @@ const seedData = async () => {
     ];
 
     const createdTickets = await Ticket.insertMany(sampleTickets);
-    console.log(`Created ${createdTickets.length} sample tickets.`);
 
-    // Add sample comments to tickets
     const sampleComments = [
       {
         ticket: createdTickets[0]._id,
@@ -281,9 +262,6 @@ const seedData = async () => {
     ];
 
     await Comment.insertMany(sampleComments);
-    console.log('Sample comments added.');
-
-    console.log('--- DATABASE SEEDING COMPLETED SUCCESSFULLY ---');
     process.exit(0);
   } catch (error) {
     console.error('Error during seeding:', error);
